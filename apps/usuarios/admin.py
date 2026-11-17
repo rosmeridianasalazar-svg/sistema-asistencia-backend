@@ -8,11 +8,41 @@ from django.utils.html import format_html
 from apps.usuarios.models import Usuarios
 
 
+# class UsuarioAdminForm(forms.ModelForm):
+
+#     password = forms.CharField(
+#         label="Nueva contraseña",
+#         required=False,
+#         min_length=8,
+#         widget=forms.PasswordInput(
+#             render_value=False,
+#             attrs={
+#                 'placeholder': 'Ingrese una nueva contraseña'
+#             }
+#         )
+#     )
+
+#     class Meta:
+#         model = Usuarios
+#         fields = '__all__'
+
+#     def clean_password(self):
+#         password = self.cleaned_data.get('password')
+
+#         if not password:
+#             raise forms.ValidationError(
+#                 "Debe ingresar una nueva contraseña."
+#             )
+
+#         validate_password(password, self.instance)
+
+#         return make_password(password)
+
 class UsuarioAdminForm(forms.ModelForm):
 
     password = forms.CharField(
         label="Nueva contraseña",
-        required=True,
+        required=False,
         min_length=8,
         widget=forms.PasswordInput(
             render_value=False,
@@ -26,18 +56,31 @@ class UsuarioAdminForm(forms.ModelForm):
         model = Usuarios
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        #al crear, la contraseña es obligatoria.
+        #al editar, es opcional.
+        self.fields['password'].required = not bool(self.instance.pk)
+
     def clean_password(self):
         password = self.cleaned_data.get('password')
 
+        #si se está editando y no se escribió una contraseña,
+        #se conserva la contraseña actual.
         if not password:
+            if self.instance.pk:
+                return self.instance.password
+
             raise forms.ValidationError(
-                "Debe ingresar una nueva contraseña."
+                "Debe ingresar una contraseña para registrar al usuario."
             )
 
+        #validar solamente la nueva contraseña ingresada.
         validate_password(password, self.instance)
 
+        #guardar la contraseña cifrada mediante el hash de Django.
         return make_password(password)
-
 
 @admin.register(Usuarios)
 class UsuariosAdmin(admin.ModelAdmin):

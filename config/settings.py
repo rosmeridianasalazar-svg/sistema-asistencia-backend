@@ -106,9 +106,9 @@ DATABASES = {
         'OPTIONS': {
             'sslmode': "require",
         },
-        # Reutilizar conexiones durante 60 segundos
+        # reutilizar conexiones durante 60 segundos
         'CONN_MAX_AGE': 60,
-        # Comprobar que la conexión siga funcionando
+        # comprobar que la conexión siga funcionando
         'CONN_HEALTH_CHECKS': True,
     }
 }

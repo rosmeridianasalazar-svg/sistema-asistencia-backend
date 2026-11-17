@@ -1,7 +1,27 @@
+# entorno virtual 
 venv/
 .venv/
+env/
+
+# variables de entorno y credenciales
+.env
+.env.*
+
+# Python
 __pycache__/
 *.py[cod]
-.env
+*.pyo
+
+# django
+*.log
 db.sqlite3
-.pytest_cache/
+media/
+staticfiles/
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

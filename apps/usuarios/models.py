@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+#validar que solo contengan numeros 
+from django.core.validators import RegexValidator
 
 # class Usuarios(models.Model):
 #     id_usuario = models.AutoField(primary_key=True)
@@ -42,18 +44,18 @@ class Usuarios(AbstractBaseUser):
     id_usuario = models.AutoField(primary_key=True)
     # relación con roles
     id_rol = models.ForeignKey('roles.Roles',models.DO_NOTHING,db_column='id_rol',related_name='usuarios')
-    dni = models.CharField(unique=True, max_length=8)
+    dni = models.CharField(unique=True, max_length=8,validators=[RegexValidator(regex=r'^\d{8}$',message='El DNI debe contener exactamente 8 dígitos.')])
     nombre = models.CharField(max_length=50)
     apellido_paterno = models.CharField(max_length=50)
     apellido_materno = models.CharField(max_length=50,blank=True,null=True)
-    telefono = models.CharField(max_length=20,blank=True,null=True)
+    telefono = models.CharField(unique=True, max_length=9, validators=[RegexValidator(regex=r'^\d{9}$',message='El teléfono debe contener exactamente 9 dígitos.')])
     # credenciales
     correo = models.CharField(unique=True,max_length=100)
 
     # la contraseña se hereda de AbstractBaseUser.
     # no necesitamos declararla nuevamente.
 
-    fecha_nacimiento = models.DateField(blank=True,null=True)
+    fecha_nacimiento = models.DateField()
     estado = models.BooleanField(default=True)
 
     # AbstractBaseUser incluye last_login,

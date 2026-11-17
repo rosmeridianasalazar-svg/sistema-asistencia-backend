@@ -52,6 +52,13 @@ class UsuarioCreateSerializer(serializers.ModelSerializer):
 
 
 class UsuarioUpdateSerializer(serializers.ModelSerializer):
+    
+    password = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        min_length=8
+    )
 
     id_rol = serializers.PrimaryKeyRelatedField(
         queryset=Roles.objects.filter(estado=True)
@@ -68,10 +75,17 @@ class UsuarioUpdateSerializer(serializers.ModelSerializer):
             'apellido_materno',
             'telefono',
             'correo',
+            'password',
             'fecha_nacimiento',
             'estado',
         ]
         read_only_fields = ['id_usuario']
+        
+    def validate_password(self, value):
+        if value:
+            validate_password(value, self.instance)
+
+        return value
 
     def validate_dni(self, value):
         value = value.strip()
@@ -86,6 +100,20 @@ class UsuarioUpdateSerializer(serializers.ModelSerializer):
     def validate_correo(self, value):
         return value.strip().lower()
 
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+
+        #actualizar los demás campos del usuario
+        for campo, valor in validated_data.items():
+            setattr(instance, campo, valor)
+
+        #cambiar la contraseña unicamente si se proporcionó una
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+
+        return instance
 
 class UsuarioSerializer(serializers.ModelSerializer):
 
