@@ -132,7 +132,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+#hashers personalizados
+PASSWORD_HASHERS = [
+    'apps.core.hashers.BCryptSHA256Cost10PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+]
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
 
