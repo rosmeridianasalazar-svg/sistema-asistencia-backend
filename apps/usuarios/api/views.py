@@ -16,7 +16,10 @@ from apps.autenticacion.permissions import (
     EsAdministrador,
     EsAdministradorOPropietario,
 )
-
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class ConflictoEliminacion(APIException):
     status_code = 409
@@ -71,3 +74,24 @@ class UsuarioDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
         except IntegrityError:
             raise ConflictoEliminacion()
+
+class CumpleanosUsuariosAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        usuarios = obtener_usuarios().filter(
+            estado=True,
+            fecha_nacimiento__isnull=False
+        )
+        datos = [
+            {
+                'id_usuario': u.id_usuario,
+                'nombre': u.nombre,
+                'apellido_paterno': u.apellido_paterno,
+                'apellido_materno': u.apellido_materno,
+                'fecha_nacimiento': u.fecha_nacimiento,
+                'nombre_rol': u.id_rol.nombre if getattr(u, 'id_rol', None) else 'Colaborador',
+            }
+            for u in usuarios
+        ]
+        return Response(datos, status=status.HTTP_200_OK)

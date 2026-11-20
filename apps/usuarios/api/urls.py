@@ -2,7 +2,8 @@ from django.urls import path
 
 from apps.usuarios.api.views import (
     UsuarioListCreateAPIView,
-    UsuarioDetailAPIView
+    UsuarioDetailAPIView,
+    CumpleanosUsuariosAPIView,
 )
 
 urlpatterns = [
@@ -10,6 +11,12 @@ urlpatterns = [
         '',
         UsuarioListCreateAPIView.as_view(),
         name='usuarios-list-create'
+    ),
+
+    path(
+        'cumpleanos/',
+        CumpleanosUsuariosAPIView.as_view(),
+        name='usuarios-cumpleanos'
     ),
 
     path(
