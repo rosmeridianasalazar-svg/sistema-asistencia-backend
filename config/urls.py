@@ -25,4 +25,6 @@ urlpatterns = [
     path('api/usuarios/',include('apps.usuarios.api.urls')),
     
     path('api/autenticacion/',include('apps.autenticacion.api.urls')),
+
+    path('api/notificaciones/', include('apps.notificaciones.api.urls')),
 ]

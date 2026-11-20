@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'apps.autenticacion.apps.AutenticacionConfig',
     'apps.horarios.apps.HorariosConfig',
     'apps.asistencias.apps.AsistenciasConfig',
+    'apps.notificaciones.services.apps.NotificacionesConfig',
     #APi rest y conexion posterior con angular o vue
 ]
 
